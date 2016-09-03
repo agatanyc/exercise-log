@@ -1,7 +1,9 @@
 """File to populate the db."""
-from model import connect_to_db, db, User, Exercise, UserExercise
-from server import app
+
+from model import init_db, db, User, Exercise, UserExercise, HTTPSession
+from app import app
 import sqlite3
+from datetime import datetime
 
 def load_user():
     user_name = 'Agata'
@@ -11,8 +13,8 @@ def load_user():
     db.session.commit()
 
 def load_exercise():
-    exercise = 'squat'
-    current_line = Exercise(exercise=exercise)
+    exercise_name = 'squat'
+    current_line = Exercise(exercise=exercise_name)
     db.session.add(current_line)
     db.session.commit()
 
@@ -22,14 +24,27 @@ def load_user_exercise():
     weight = 135
     reps = 10
     time = ''
+    date = datetime.utcnow()
+
     current_line = UserExercise(exercise_id=exercise_id, user_id=user_id,
-            weight=weight, reps=reps, time=time)
+                                 weight=weight, reps=reps, time=time,
+                                 date=date)
     db.session.add(current_line)
     db.session.commit()
 
+def load_session():
+    session_id = 1
+    session_cookie = '14958e74-ce37-4b3b-80a8-e0687e4b6d70'
+    user_id = 1
+    current_line = HTTPSession(session_id=session_id,
+                           session_cookie=session_cookie, user_id=user_id)
+    db.session.add(current_line)
+    db.session.commit()
+
+
 if __name__ == "__main__":
 
-    connect_to_db(app)
+    init_db(app)
     db.create_all()
 
     load_user()
