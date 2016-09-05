@@ -55,7 +55,7 @@ class HTTPSession(db.Model):
     session_cookie = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'),
                                                   nullable=False)
-    user = db.relationship("User", backref=db.backref("user_exercises"))
+    user = db.relationship("User", backref=db.backref("sessions"))
 
 #--------------------------
 

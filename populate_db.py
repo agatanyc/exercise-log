@@ -6,8 +6,8 @@ import sqlite3
 from datetime import datetime
 
 def load_user():
-    user_name = 'Agata'
-    password = '123'
+    user_name = 'admin'
+    password = 'password'
     current_line = User(user_name=user_name, password=password)
     db.session.add(current_line)
     db.session.commit()
@@ -50,3 +50,4 @@ if __name__ == "__main__":
     load_user()
     load_exercise()
     load_user_exercise()
+    load_session()
