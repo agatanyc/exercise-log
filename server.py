@@ -1,6 +1,7 @@
 """Main module of an aplication for loging exercises."""
 
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, redirect, \
+                  url_for
 from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
 
@@ -15,6 +16,7 @@ def show_user(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('show_user.html', user=user)
 """
+
 @app.route('/')
 def index():
     if logged_in():
@@ -32,7 +34,6 @@ def login():
         
         user_name = request.form['username']
         password = request.form['password']
-        print user_name, " ", password
         users = db.session.query(User).filter(User.user_name==user_name,
                 User.password==password)
         for user in users:
@@ -48,13 +49,29 @@ def login():
 @app.route('/logout')
 def logout():
     # remove the user_id and cookie from the session
-    HTTPSession.query.filter(session_cookie ==
+    db.session.query(HTTPSession).filter(HTTPSession.session_cookie ==
                              request.cookies.get('session_id')).delete()
     db.session.commit()
-    return redirect(url_for('/'))
+    return redirect(url_for('index'))
 
-@app.route('/entry')
+@app.route('/entry', methods=['GET','POST'])
 def entry():
+    if request.method == 'POST':
+        exercise_name = request.form['exercise']
+        weight = request.form['weight']
+        reps = request.form['reps']
+        time = request.form['time']
+        date = request.form['date']
+
+        current_line = UserExercise(exercise_id=exercise_id, user_id=user_id,
+                                 weight=weight, reps=reps, time=time,
+                                 date=date)
+        db.session.add(current_line)
+        db.session.commit()
+        return redirect(url_for('index'))
+    else:
+        return render_template('log_workout.html')
+        
     # 'form' format, get the data and save it in the DB
     # FOrm is the way for a browser to construct the data the user provides
     # if the the method is GET - return webpage with a 'form' 
@@ -63,13 +80,29 @@ def entry():
     # to the user.
     return render_template('log_workout.html')
 
-@app.route('/history')
+@app.route('/history', methods=['GET','POST'])
 def workout_history():
-    # pull data from UserExercise table and  display it e.g.  name of exercise 
-    # not the exercise id
-    # use template to display data dinamicly - use templating
-    # provide a link to edit the workout if needed
-    pass
+    if request.method == 'GET':
+        current_user = logged_in()
+        if current_user:
+            history = db.session.query(UserExercise).filter(UserExercise.user_id ==
+                                                         current_user).all() 
+            db.session.commit()
+            return render_template('history.html')
+        else:
+            return render_template('login.html')
+    else:
+        # there is a POST request
+
+        # there is a request to edit the history data
+        # loop through all entry columns, check which was edited and commit it 
+        # to the db
+        # use template to display data dinamicly - use templating
+        # provide a link to edit the workout if needed
+
+        # pull data from UserExercise table and display it e.g. name of exercise 
+        # not the exercise id
+        pass
 
 # Helper functions
 
