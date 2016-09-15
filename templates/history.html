@@ -8,6 +8,7 @@
     <th>Reps</th>
     <th>Time</th>
     <th>Date</th>
+    <th>--</th>
   </tr>
 <!--  `workout` is an instance of `UserExercise` class;
        first exercise is the method of `UserExercise` class that creates 
@@ -26,6 +27,10 @@
         {% endif %}
     </td>
     <td>{{workout.date.strftime("%m/%d/%Y")}}</td>
+    <td>
+        <a href="/edit?id={{workout.user_exercise_id}}">Edit</a><br>
+        <input type='hidden' value={{workout.user_exercise_id}}>
+    </td>
 </tr>
 {% endfor %}
 </table>

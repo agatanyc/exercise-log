@@ -5,9 +5,8 @@
     <ul>  
         <table>
         <li><label for="exercise name">Exercise name</label>  
-        <!-- ADD DROP DOWN BUTTON ^^^^^^^^^^^^^^^^^^^^^^ -->
         <!-- value of `name` atribute is passed from server.py - main logic module -->
-        <!-- the value is passed in render_template function as a parameter anter the name of html file -->
+        <!-- the value is passed in render_template function as a parameter -->
         <select type="text" name="exercise_id" placeholder="exercise name" required>
             {% for exercise_id in exercises %}
             <option value="{{ exercise_id }}">{{ exercises[exercise_id] }}</option>

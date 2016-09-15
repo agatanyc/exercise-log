@@ -87,6 +87,14 @@ def entry():
             return render_template('entry.html', exercises=exercises)
         else:
             return redirect(url_for('login'))
+
+@app.route('/edit', methods=['GET'])
+def edit_history():
+    if logged_in():
+        query_string = request.args.to_dict()
+        user_exercise_id = query_string['id']
+        print 'XXXXXXXXXX', user_exercise_id 
+        return 'Edit_history'
         
 @app.route('/history', methods=['GET','POST'])
 def workout_history():
