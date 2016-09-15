@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <h2>ENTER YOUR WORKOUT:</h2>
+    <ul>  
+        <table>
+        <li><label for="exercise name">Exercise name</label>  
+        <!-- ADD DROP DOWN BUTTON ^^^^^^^^^^^^^^^^^^^^^^ -->
+        <!-- value of `name` atribute is passed from server.py - main logic module -->
+        <!-- the value is passed in render_template function as a parameter anter the name of html file -->
+        <select type="text" name="exercise_id" placeholder="exercise name" required>
+            {% for exercise_id in exercises %}
+            <option value="{{ exercise_id }}">{{ exercises[exercise_id] }}</option>
+             {% endfor %}
+        </select>
+        </li>  
+        <li><label for="weight">Weight</label>  
+        <input type="text" name="weight" placeholder="weight"></li>  
+        <li><label for="reps">Reps</label>  
+        <input type="text" name="reps" placeholder="reps"></li>  
+        <li><label for="time">Time</label>  
+        <input type="text" name="time" placeholder="time in min"></li>  
+        <li><label for="date">Date</label>  
+        <input type="date" name="date" placeholder="date"></li>  
+        </table>
+        <input type="submit" value="Save"></li>  
+    </ul>  
+</form>  
+</body>
+</html>
