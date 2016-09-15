@@ -1,12 +1,33 @@
-
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <p>
-            This will be a page to view history : )
-        </p>
-    </body>
+<html>
+<body>
+<table style="">
+<tr>
+    <th>Exercise</th>
+    <th>Weight</th>
+    <th>Reps</th>
+    <th>Time</th>
+    <th>Date</th>
+  </tr>
+<!--  `workout` is an instance of `UserExercise` class;
+       first exercise is the method of `UserExercise` class that creates 
+       `Exercise`  class object
+       second exercise is a property of `Exercise` class which is a name 
+       of the exercise-->
+{% for workout in workouts %}
+<tr>
+    <td>{{workout.exercise.exercise}}</td>
+    <td>{{workout.weight}}</td>
+    <td>{{workout.reps}}</td>
+    <td>{% if not workout.time %}
+        --
+        {% else %}
+        {{workout.time}}
+        {% endif %}
+    </td>
+    <td>{{workout.date.strftime("%m/%d/%Y")}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
 </html>

@@ -13,6 +13,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_name = db.Column(db.String(40))
     password = db.Column(db.String(30))
+    user_exercises = db.relationship('UserExercise',back_populates='user')
 
     def __repr__(self):
         return "<User user_id:%s name=%s" % (self.user_id, self.user_name)
@@ -23,6 +24,7 @@ class Exercise(db.Model):
 
     exercise_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     exercise = db.Column(db.String(50), nullable=False)
+    user_exercises = db.relationship('UserExercise', back_populates='exercise')
 
     def __repr__(self):
         return "<Exercise exercise_id=%s name=%s" % (self.exercise_id,
@@ -43,9 +45,9 @@ class UserExercise(db.Model):
     time = db.Column(db.String(30))
     date = db.Column(db.DateTime)
 
-    # Define relationship to 'User' and `Exercise` class
-    exercise = db.relationship("Exercise", backref=db.backref("user_exercises"))
-    user = db.relationship("User", backref=db.backref("user_exercises"))
+    user = db.relationship('User', back_populates='user_exercises')
+    exercise = db.relationship('Exercise', back_populates='user_exercises')
+
 
 class HTTPSession(db.Model):
 
