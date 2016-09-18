@@ -13,10 +13,11 @@ def load_user():
     db.session.commit()
 
 def load_exercise():
-    exercise_name = 'squat'
-    current_line = Exercise(exercise=exercise_name)
-    db.session.add(current_line)
-    db.session.commit()
+    exercise_names = ['Squat', 'DL', 'Bench press', 'Seated Row', 'Pushup']
+    for e in exercise_names:
+        current_line = Exercise(exercise=e)
+        db.session.add(current_line)
+        db.session.commit()
 
 def load_user_exercise():
     exercise_id = 1

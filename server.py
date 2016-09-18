@@ -11,13 +11,6 @@ from model import User, Exercise, UserExercise, HTTPSession, init_db, db
 
 init_db(app)
 
-"""
-@app.route('/user/<username>')
-def show_user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template('show_user.html', user=user)
-"""
-
 @app.route('/')
 def index():
     if logged_in():
@@ -69,7 +62,6 @@ def entry():
         time = request.form['time']
         year, month, day = request.form['date'].split('-') #e.g.['2016', '09', '11']
         d = date(int(year), int(month), int(day)) 
-        print d
         new_row = UserExercise(exercise_id=exercise_id, user_id=user_id,
                                  weight=weight, reps=reps, time=time,
                                  date=d)
@@ -80,7 +72,7 @@ def entry():
         if logged_in():
             rows = db.session.query(Exercise).all()
             exercises = {}
-            for row in rows:
+            for row in rows: #TODO move it to a function
                 exercise_name = row.exercise
                 exercise_id = row.exercise_id
                 exercises[exercise_id] = exercise_name
@@ -88,13 +80,43 @@ def entry():
         else:
             return redirect(url_for('login'))
 
-@app.route('/edit', methods=['GET'])
+@app.route('/edit', methods=['GET','POST'])
 def edit_history():
-    if logged_in():
-        query_string = request.args.to_dict()
-        user_exercise_id = query_string['id']
-        print 'XXXXXXXXXX', user_exercise_id 
-        return 'Edit_history'
+    if request.method == 'GET':
+        if logged_in():
+            query_string = request.args.to_dict()
+            user_exercise_id = query_string['id']
+            # rows is a list of UserExercise instances
+            # (in this case it will be list of one instance)
+            user_exercise_rows = db.session.query(UserExercise).filter(
+                      UserExercise.user_exercise_id == user_exercise_id).all() 
+            for workout in user_exercise_rows:
+                pass
+
+            exercise_rows = db.session.query(Exercise).all()
+            exercises = {}
+            for row in exercise_rows:
+                    exercise_name = row.exercise
+                    exercise_id = row.exercise_id
+                    # exercises is a dict passed to the html file 
+                    exercises[exercise_id] = exercise_name
+                    #TODO move it to a function
+            return render_template('edit.html', workout=workout,
+                                          exercises=exercises)
+    else:
+        user_exercise = db.session.query(UserExercise).filter(
+                UserExercise.user_exercise_id == request.form['user_exercise_id']).all() 
+        for u_e in user_exercise:
+            u_e.user_id = logged_in()
+            u_e.exercise_id = request.form['exercise_id']
+            u_e.weight = request.form['weight']
+            u_e.reps = request.form['reps']
+            u_e.time = request.form['time']
+            year, month, day = request.form['date'].split('-') #e.g.['2016', '09', '11']
+            u_e.d = date(int(year), int(month), int(day)) 
+
+        db.session.commit()
+    return redirect(url_for('index'))
         
 @app.route('/history', methods=['GET','POST'])
 def workout_history():
@@ -107,31 +129,6 @@ def workout_history():
             return render_template('history.html', workouts=rows)
         else:
             return render_template('login.html')
-    #else:
-    #    if request.method == 'POST':
-        # user is editing the history data
-    #        current_user = logged_in()
-    #        if current_user:
-    #            rows = db.session.query(UserExercise).filter(
-    #                             UserExercise.user_id == current_user).all()
-    #        for row in rows:
-    #            if row.weight != request.form['weight']:
-    #                pass
-                    #TODO update the db
-# although the most likelly I will go with different approach with option
-# to edit single workout 
-
-        
-# ------------------------------
-        # there is a POST request
-        # there is a request to edit the history data
-        # loop through all entry columns, check which was edited and commit it 
-        # to the db
-        # use template to display data dinamicly - use templating
-        # provide a link to edit the workout if needed
-
-        # pull data from UserExercise table and display it e.g. name of exercise 
-        # not the exercise id
 
 # Helper functions
 
@@ -152,14 +149,3 @@ if __name__ == "__main__":
     init_db(app)
     app.run()
 
-# select user_id from sessions where session = "jj";DROP DATABASE;ttt"
-# create class Session
-# create sessions table
-# query the db for the record where cookie uuid == session uuid
-#
-# session.query(Session).filter(Session.session == request.cookie.get('session_id'))
-# return user_id coresponding with the session uuid in sessions table
-# meaning user loged in or None
-# SET COOKIE in login function and every time user changes endpoint.
-#
-#Get the cookie from the req and set it  in every view function. Pbly in logged_in function.

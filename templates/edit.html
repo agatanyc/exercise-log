@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<form name="edit" action="http://127.0.0.1:5000/edit?id={{workout.user_exercise_id}}" method="POST" accept-charset="utf-8">  
+    <h2>EDIT YOUR WORKOUT:</h2>
+    <ul>
+        <table>
+        <li><label for='exercise name'>Exercise name</label>
+            <select type='text' name='exercise_id'></li>
+            {% for exercise_id in exercises %}
+            {% if exercise_id == workout.exercise_id %}
+            <option value="{{ exercise_id }}" selected='selected'>{{ exercises[exercise_id] }}</option>
+            {% else %}
+            <option value="{{ exercise_id }}">{{ exercises[exercise_id] }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+            <li><label for="weight">Weight</label>  
+            <input type='text' name='weight' value="{{ workout.weight }}"></li>
+            <li><label for="reps">Reps</label>  
+            <input type='text' name='reps' value="{{ workout.reps }}"></li>
+            <li><label for="time">Time</label>  
+            <input type='text' name='time' value="{{ workout.time }}"></li>
+            <li><label for="date">Date</label>  
+            <input type='date' name='date' value="{{ workout.date.strftime("%Y-%m-%d") }}"></li>
+        </table>
+            <input type="submit" name="Submit" value="update" >
+            <input type='hidden' name='user_exercise_id' value={{workout.user_exercise_id}}>
+    </ul>  
+</form>  
+</body>
+</html>
+

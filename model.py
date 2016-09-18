@@ -14,6 +14,7 @@ class User(db.Model):
     user_name = db.Column(db.String(40))
     password = db.Column(db.String(30))
     user_exercises = db.relationship('UserExercise',back_populates='user')
+    sessions = db.relationship('HTTPSession', back_populates='user')
 
     def __repr__(self):
         return "<User user_id:%s name=%s" % (self.user_id, self.user_name)
@@ -57,7 +58,7 @@ class HTTPSession(db.Model):
     session_cookie = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'),
                                                   nullable=False)
-    user = db.relationship("User", backref=db.backref("sessions"))
+    user = db.relationship('User', back_populates='sessions')
 
 #--------------------------
 
