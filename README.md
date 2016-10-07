@@ -13,6 +13,16 @@ Bootstrap (front-end development)
 
 `python server.py`
 
+## To connect to DB run:
+
+python model.py
+
+
+##To query the db from command line run:
+
+`populate_db.py`
+
+`sqlite3 workouts.db'
 
 ## Deployment
 
