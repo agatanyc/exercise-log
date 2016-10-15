@@ -18,7 +18,7 @@ Bootstrap (front-end development)
 python model.py
 
 
-##To query the db from command line run:
+## To query the db from command line run:
 
 `populate_db.py`
 
@@ -27,3 +27,5 @@ python model.py
 ## Deployment
 
 TBD
+
+## Tests - WORK IN PROGRESS
