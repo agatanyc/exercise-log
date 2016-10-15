@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<form name="register" action="/register" method="POST" accept-charset="utf-8">  
+    <ul> 
+        {% if message %}
+        <h2>{{message}}</h2>
+        {% endif %}
+        <li><label for="username">Username</label>  
+        <input type="text" name="username" placeholder="username" required></li>  
+        <li><label for="password">Password</label>  
+        <input type="password" name="password" placeholder="password" required></li>  
+        <li>  
+        <input type="submit" value="Register"></li>
+
+    </ul>  
+</form>  
+</body>
+</html>
