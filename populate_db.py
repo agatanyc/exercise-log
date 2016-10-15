@@ -45,6 +45,11 @@ def load_session():
 
 if __name__ == "__main__":
 
+    # start fresh
+    db.session.remove()
+    db.drop_all()
+
+    # populate db
     init_db(app)
     db.create_all()
 
