@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from app import app
 from datetime import datetime
 
-db = SQLAlchemy()
+db = SQLAlchemy(app)
 
 # Model definitions
 
