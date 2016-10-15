@@ -55,19 +55,22 @@ def entry():
     # feedback to the user
     # return render_template('entry.html')
     if request.method == 'POST':
-        user_id = logged_in()
-        exercise_id = request.form['exercise_id']
-        weight = request.form['weight']
-        reps = request.form['reps']
-        time = request.form['time']
-        year, month, day = request.form['date'].split('-') #e.g.['2016', '09', '11']
-        d = date(int(year), int(month), int(day)) 
-        new_row = UserExercise(exercise_id=exercise_id, user_id=user_id,
-                                 weight=weight, reps=reps, time=time,
-                                 date=d)
-        db.session.add(new_row)
-        db.session.commit()
-        return redirect(url_for('index'))
+        if logged_in():
+            user_id = logged_in()
+            exercise_id = request.form['exercise_id']
+            weight = request.form['weight']
+            reps = request.form['reps']
+            time = request.form['time']
+            year, month, day = request.form['date'].split('-') #e.g.['2016', '09', '11']
+            d = date(int(year), int(month), int(day)) 
+            new_row = UserExercise(exercise_id=exercise_id, user_id=user_id,
+                                     weight=weight, reps=reps, time=time,
+                                     date=d)
+            db.session.add(new_row)
+            db.session.commit()
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('login'))
     else:
         if logged_in():
             rows = db.session.query(Exercise).all()
@@ -130,12 +133,40 @@ def workout_history():
         else:
             return render_template('login.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # if the the method is GET - return webpage with a 'form' 
+    # to enter register data
+    # if POST process the data from the 'form',
+    # check if data is unique
+    # save to the DB and give
+    # feedback to the user
+    # return render_template('register.html')
+    if request.method == 'POST':
+        user_name = request.form['username']
+        password = request.form['password']
+        print user_name
+        temp = db.session.query(User).filter(User.user_name==user_name,
+                User.password==password)
+        for t in temp:
+            message = 'This name is taken :( choose another one.'
+            return render_template('register.html', message=message)
+        # populate db with new user and password
+        new_row = User(user_name=user_name, password=password)
+        db.session.add(new_row)
+        db.session.commit()
+        message = 'Registration complete. Now you can login.'
+        return render_template('login.html', message=message)
+    else:
+        # return webpage to register
+        return render_template('register.html')
+
 # Helper functions
 
 def logged_in():
     if request.cookies.get('session_id'):
         for sess in db.session.query(HTTPSession).filter(
-                HTTPSession.session_cookie == request.cookies.get('session_id')):
+                HTTPSession.session_cookie == request.cookies.get('session_id')): # compare content of the cookie
             return sess.user_id
     return None
 
